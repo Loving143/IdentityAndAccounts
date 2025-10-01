@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: identity-service
+
+server:
+  port: 8040
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    hostname: 192.168.18.163  # Remove ${} for static IP
+    instance-id: identity-service:8040  # Use proper placeholders
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway
