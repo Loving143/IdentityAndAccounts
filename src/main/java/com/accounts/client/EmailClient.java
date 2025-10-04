@@ -8,5 +8,5 @@ import com.accounts.request.EmailRequest;
 public interface EmailClient {
 
     @PostMapping("/send-otp")
-    void sendOtp(@RequestBody EmailRequest emailReq);
+    String sendOtp(@RequestBody EmailRequest emailReq);
 }

@@ -12,6 +12,7 @@ public class OtpDto {
 	    private Instant createdAt;
 	    private String codeHash;
 	    private String name;
+	    private String res;
 	    
 		public String getUserName() {
 			return userName;
@@ -60,6 +61,12 @@ public class OtpDto {
 		}
 		public void setName(String name) {
 			this.name = name;
+		}
+		public String getRes() {
+			return res;
+		}
+		public void setRes(String res) {
+			this.res = res;
 		}
 	    
 	    

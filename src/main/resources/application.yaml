@@ -5,7 +5,6 @@ spring:
 server:
   port: 8040
 
-
 eureka:
   client:
     service-url:
@@ -14,6 +13,39 @@ eureka:
     prefer-ip-address: true
     hostname: 192.168.18.163  # Remove ${} for static IP
     instance-id: identity-service:8040  # Use proper placeholders
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      otpService:
+        register-health-indicator: true
+        failure-rate-threshold: 50          # Open if 50% of requests fail
+        minimum-number-of-calls: 5          # Wait for at least 5 calls before evaluating
+        sliding-window-size: 10             # Look at last 10 requests
+        wait-duration-in-open-state: 30s    # Stay open for 30 seconds before retry
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+
+resilience4j.circuitbreaker:
+  instances:
+    otpCB:
+      # When circuit opens, wait 10s before testing service again
+      wait-duration-in-open-state: 10s
+      
+      # Open circuit if 50% of recent calls fail  
+      failure-rate-threshold: 50
+      
+      # Calculate failure rate based on last 10 calls
+      sliding-window-size: 10
+      
+      # Optional: Minimum number of calls before calculating failure rate
+      minimum-number-of-calls: 2
+  
+resilience4j.retry:
+  instances:
+    otpRetry:
+      max-attempts: 2
+      wait-duration: 2s
 
 management:
   endpoints:
