@@ -19,10 +19,12 @@ import com.accounts.client.EmailClient;
 import com.accounts.client.OtpClient;
 import com.accounts.config.response.LoginResponse;
 import com.accounts.dto.AccountDto;
+import com.accounts.dto.ChangePasswordRequest;
 import com.accounts.dto.OtpDto;
 import com.accounts.helper.CustomUserDetails;
 import com.accounts.helper.JwtUtil;
 import com.accounts.request.EmailRequest;
+import com.accounts.response.PasswordChangeResult;
 import com.accounts.service.AccountService;
 
 @RestController
@@ -55,7 +57,6 @@ public class AccountController {
 	            CustomUserDetails userDetails =
 	                    (CustomUserDetails) authenticationResponse.getPrincipal();
 	            OtpDto otp = otpClient.generateOtp(accountDto.getUserName());
-	            // ✅ Send codeHash to Email service
 	            
 	            Map<String, Object> model = new HashMap<>();
 	            model.put("name",otp.getUserName());
@@ -81,6 +82,11 @@ public class AccountController {
 	    public ResponseEntity<?>signUp(@RequestBody AccountDto account){
 	    	accountService.signup(account);
 	    	return ResponseEntity.ok("User registered successfully!");
+	    }
+	    
+	    @PostMapping("/changePassword")
+	    public PasswordChangeResult changePassword(@RequestBody ChangePasswordRequest req){
+	    	return accountService.changePassword(req);
 	    }
 	    
 	

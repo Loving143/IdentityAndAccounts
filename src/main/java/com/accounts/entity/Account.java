@@ -9,6 +9,7 @@ import com.accounts.dto.AccountDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -55,6 +56,9 @@ public class Account {
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefreshToken> refreshToken = new ArrayList<>();
     
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<LoginAttempt> loginAttempts = new ArrayList<>();
+    
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserRole> userRole = new ArrayList<>();
     @Column(length = 20, nullable = false)
@@ -72,8 +76,6 @@ public class Account {
 
     @Column(name = "last_login_at")
     private Instant lastLoginAt;
-
-    
 
     @Column(name = "global_logout_at")
     private Instant globalLogoutAt;
@@ -226,9 +228,9 @@ public class Account {
 	public void setUserRole(List<UserRole> userRole) {
 		this.userRole = userRole;
 	}
+	
 	public Account() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 }

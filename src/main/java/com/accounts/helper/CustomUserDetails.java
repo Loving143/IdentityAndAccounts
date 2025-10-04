@@ -2,11 +2,11 @@ package com.accounts.helper;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 
 import com.accounts.entity.Account;
 
@@ -20,14 +20,10 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (account == null || account.getUserRole() == null) {
-            return new ArrayList<>();
-        }
-
-        return account.getUserRole().stream()
-            .filter(ur -> ur.getRole() != null && ur.getRole().getName() != null)
-            .map(ur -> new CustomGrantedAuthority(ur.getRole().getName()))
-            .collect(Collectors.toList());
+    	List<CustomGrantedAuthority>authorities = new ArrayList<>();
+    	CustomGrantedAuthority authority = new CustomGrantedAuthority("ROLE_USER");
+    	authorities.add(authority);
+    	return authorities;
     }
 
     @Override
