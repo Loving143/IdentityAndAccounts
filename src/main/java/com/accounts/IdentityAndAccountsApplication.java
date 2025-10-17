@@ -11,6 +11,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 public class IdentityAndAccountsApplication { 
 
 	public static void main(String[] args) {
+		System.out.println();
 		SpringApplication.run(IdentityAndAccountsApplication.class, args);
 	}
 
