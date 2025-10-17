@@ -1,17 +1,22 @@
 package com.accounts.controller;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.accounts.client.EmailClient;
 import com.accounts.client.OtpClient;
 import com.accounts.config.response.LoginResponse;
@@ -22,11 +27,11 @@ import com.accounts.dto.OtpDto;
 import com.accounts.helper.CustomUserDetails;
 import com.accounts.helper.JwtUtil;
 import com.accounts.request.EmailRequest;
+import com.accounts.response.AccountResponse;
 import com.accounts.response.PasswordChangeResult;
 import com.accounts.service.AccountService;
 import com.accounts.serviceImpl.EmailService;
 import com.accounts.serviceImpl.OtpService;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 @RestController
 @RequestMapping("/auth")
@@ -40,8 +45,9 @@ public class AccountController {
 		private static final String OTP_CB = "otpService";
 		private final JwtUtil jwtUtil;
 		private final OtpService otpService;
+		private final UserDetailsService userDetailsService;
 	    public AccountController(AuthenticationManager authenticationManager,AccountService accountService
-	    		,JwtUtil jwtUtil,OtpClient otpClient,EmailClient emailClient, EmailService emailService, OtpService otpService) {
+	    		,JwtUtil jwtUtil,OtpClient otpClient,EmailClient emailClient, EmailService emailService, OtpService otpService, UserDetailsService userDetailsService) {
 	        this.accountService = accountService;
 			this.emailService = emailService;
 			this.authenticationManager = authenticationManager;
@@ -49,6 +55,7 @@ public class AccountController {
 			this.otpClient = otpClient;
 			this.emailClient = emailClient;
 			this.otpService = otpService;
+			this.userDetailsService = userDetailsService;
 	    }
 
 	    @PostMapping("/login")
@@ -105,6 +112,20 @@ public class AccountController {
 	    public PasswordChangeResult changePassword(@RequestBody ChangePasswordRequest req){
 	    	return accountService.changePassword(req);
 	    }
+	    
+	    @GetMapping("/validateToken")
+	    public AccountResponse validateToken(String token) {
+	    	AccountResponse resp = null;
+	    	String userName = jwtUtil.extractUsername(token);
+	    	UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
+	    	if(userName.equals(userDetails.getUsername()) && !jwtUtil.isTokenExpired(token)){
+	    		resp = new AccountResponse();
+	    		resp.setUsername(userName);
+	    		resp.setValidToken(true);
+	    	}
+	    	return resp;
+	    }
+	    
 	    
 	
 

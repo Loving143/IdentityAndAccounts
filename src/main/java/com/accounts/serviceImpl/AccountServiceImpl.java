@@ -35,7 +35,7 @@ public class AccountServiceImpl implements AccountService{
 	
 	@Override
 	public void signup(AccountDto account) {
-		passwordEncoder.encode(account.getPassword());
+//		passwordEncoder.encode(account.getPassword());
 		Account accountt = new Account(account);
 		accountt.setPasswordHash(passwordEncoder.encode(account.getPassword()));
 		accountRepository.save(accountt);

@@ -43,7 +43,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 		     return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
 		}
 		
-		private boolean isTokenExpired(String token) {
+		public boolean isTokenExpired(String token) {
 	        Date expiration = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getExpiration();
 	        return expiration.before(new Date());
 	    }
