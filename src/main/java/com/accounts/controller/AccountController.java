@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,8 +28,10 @@ import com.accounts.dto.OtpDto;
 import com.accounts.helper.CustomUserDetails;
 import com.accounts.helper.JwtUtil;
 import com.accounts.request.EmailRequest;
+import com.accounts.request.ValidateOtpRequest;
 import com.accounts.response.AccountResponse;
 import com.accounts.response.PasswordChangeResult;
+import com.accounts.response.SuccessfulLoginResponse;
 import com.accounts.service.AccountService;
 import com.accounts.serviceImpl.EmailService;
 import com.accounts.serviceImpl.OtpService;
@@ -93,7 +96,7 @@ public class AccountController {
 	            	        .body(new ErrorResponse("OTP_UNAVAILABLE", "Email service temporarily unavailable. Please try again later."));
 	            }
 	            String jwtToken = jwtUtil.generateToken(accountDto.getUserName(),userDetails.getAuthorities());
-	            LoginResponse response = new LoginResponse(jwtToken,accountDto.getUserName());
+	            SuccessfulLoginResponse response = new SuccessfulLoginResponse("Otp has been sent to the verified email.");
 	            return ResponseEntity.ok().body(response);
 
 	        }
@@ -125,6 +128,19 @@ public class AccountController {
 	    	}
 	    	return resp;
 	    }
+	    
+	    @PostMapping("/verify-otp")
+	    public ResponseEntity<?> verifyOtp(@RequestBody ValidateOtpRequest otpReq) {
+	        Authentication authentication = authenticationManager.authenticate(
+	                new UsernamePasswordAuthenticationToken(otpReq.getUserName(), otpReq.getOtp()));
+	        SecurityContextHolder.getContext().setAuthentication(authentication);
+	        CustomUserDetails userDetails =(CustomUserDetails) authentication.getPrincipal();
+	        String jwtToken = jwtUtil.generateToken(otpReq.getUserName(),userDetails.getAuthorities());
+	        LoginResponse response = new LoginResponse(jwtToken,otpReq.getUserName());
+            return ResponseEntity.ok().body(response);
+	    }
+	    
+	   
 	    
 	    
 	

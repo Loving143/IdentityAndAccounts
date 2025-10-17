@@ -1,5 +1,6 @@
 package com.accounts.helper;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -7,19 +8,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 
-@Component
 public class CustomAuthenticationProvider implements AuthenticationProvider{
 
-	private final PasswordEncoder passwordEncoder;
-	private final CustomUserDetailsService userDetailsService;
-	CustomAuthenticationProvider(CustomUserDetailsService userDetailsService,
-			PasswordEncoder passwordEncoder){
-		this.userDetailsService = userDetailsService;
-		this.passwordEncoder = passwordEncoder;
-	}
-	
+	@Autowired
+	private  PasswordEncoder passwordEncoder;
+	@Autowired
+	private CustomUserDetailsService userDetailsService;
+
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		String userName = authentication.getName();

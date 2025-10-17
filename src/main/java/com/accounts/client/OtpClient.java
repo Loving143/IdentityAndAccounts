@@ -1,6 +1,7 @@
 package com.accounts.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -12,8 +13,7 @@ import com.accounts.dto.OtpDto;
 	    @PostMapping("/generate")
 	    OtpDto generateOtp(@RequestParam("username") String username);
 
-	    @PostMapping("/validate")
-	    boolean validateOtp(@RequestParam("username") String username,
-	                        @RequestParam("otp") String otp);
+	    @PostMapping("/validate/otp")
+	    boolean validateOtp(@PathVariable String userName, @PathVariable String otp);
 	}
 
