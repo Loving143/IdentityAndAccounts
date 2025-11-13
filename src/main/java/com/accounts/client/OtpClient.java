@@ -14,6 +14,6 @@ import com.accounts.dto.OtpDto;
 	    OtpDto generateOtp(@RequestParam("username") String username);
 
 	    @PostMapping("/validate/otp")
-	    boolean validateOtp(@PathVariable String userName, @PathVariable String otp);
+	    boolean validateOtp(@RequestParam("userName") String userName, @RequestParam("otp") String otp);
 	}
 

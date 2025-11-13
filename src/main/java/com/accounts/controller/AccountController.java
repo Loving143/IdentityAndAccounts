@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -134,7 +135,7 @@ public class AccountController {
 	        Authentication authentication = authenticationManager.authenticate(
 	                new UsernamePasswordAuthenticationToken(otpReq.getUserName(), otpReq.getOtp()));
 	        SecurityContextHolder.getContext().setAuthentication(authentication);
-	        CustomUserDetails userDetails =(CustomUserDetails) authentication.getPrincipal();
+	        CustomUserDetails userDetails =(CustomUserDetails) userDetailsService.loadUserByUsername(otpReq.getUserName());
 	        String jwtToken = jwtUtil.generateToken(otpReq.getUserName(),userDetails.getAuthorities());
 	        LoginResponse response = new LoginResponse(jwtToken,otpReq.getUserName());
             return ResponseEntity.ok().body(response);
