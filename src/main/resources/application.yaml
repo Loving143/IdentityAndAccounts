@@ -3,14 +3,14 @@ spring:
     name: identity-service
 
 server:
-  port: ${PORT:8040}
+  port: ${PORT}
 
 eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_URL}
   instance:
-    prefer-ip-address: true
+    prefer-ip-address: false
     instance-id: "${spring.application.name}:${server.port}"
 
 resilience4j:
